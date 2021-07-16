@@ -2,8 +2,6 @@
  * @fileOverview 根据运行时环境获取默认的 daruk options
  */
 
-import { Options } from '../typings/daruk_options';
-
 export default function getDefaultOptions(
   rootPath: string,
   name = 'daruk app',

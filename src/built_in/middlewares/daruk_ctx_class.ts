@@ -3,18 +3,17 @@
  */
 
 import { Container } from 'inversify';
-import { Daruk, darukContainer, DarukContext } from '../../';
+import { darukContainer } from '../../';
 import { defineMiddleware } from '../../decorators';
-import { MiddlewareClass, Next } from '../../typings/daruk';
 
 @defineMiddleware('daruk_ctx_class')
-class DarukCtxClass implements MiddlewareClass {
-  public initMiddleware(_daruk: Daruk) {
-    return async (ctx: DarukContext, next: Next) => {
+class DarukCtxClass implements DarukType.MiddlewareClass {
+  public initMiddleware(_daruk: DarukType.Daruk) {
+    return async (ctx: DarukType.DarukContext, next: DarukType.Next) => {
       let requestContainer = new Container({ skipBaseClassChecks: true });
       requestContainer.parent = darukContainer;
-      requestContainer.bind<DarukContext>('ctx').toConstantValue(ctx);
-      requestContainer.bind<Daruk>('Daruk').toConstantValue(_daruk);
+      requestContainer.bind<DarukType.DarukContext>('ctx').toConstantValue(ctx);
+      requestContainer.bind<DarukType.Daruk>('Daruk').toConstantValue(_daruk);
       ctx.requestContainer = requestContainer;
       await next();
     };

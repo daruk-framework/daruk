@@ -3,20 +3,17 @@
  */
 
 import { CronJob } from 'cron';
-import { injectable } from 'inversify';
-import Daruk from '../core/daruk';
 import { darukContainer } from '../core/inversify.config';
 import { TYPES } from '../core/types';
 import { plugin } from '../decorators';
-import { PluginClass, TimerClass } from '../typings/daruk';
 
 @plugin()
-class Timer implements PluginClass {
-  public async initPlugin(daruk: Daruk) {
+class Timer implements DarukType.PluginClass {
+  public async initPlugin(daruk: DarukType.Daruk) {
     daruk.on('init', () => {
       if (darukContainer.isBound(TYPES.Timer)) {
-        const timer = darukContainer.getAll<TimerClass>(TYPES.Timer);
-        timer.forEach(function initTimer(job: TimerClass) {
+        const timer = darukContainer.getAll<DarukType.TimerClass>(TYPES.Timer);
+        timer.forEach(function initTimer(job: DarukType.TimerClass) {
           job.initTimer(daruk);
           let instance: CronJob = new CronJob(
             job.cronTime,

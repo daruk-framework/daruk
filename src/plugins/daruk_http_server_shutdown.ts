@@ -4,15 +4,13 @@
 
 import ExitHook = require('daruk-exit-hook');
 import ShutDown = require('http-server-shutdown');
-import { injectable } from 'inversify';
 import Daruk from '../core/daruk';
 import { darukContainer } from '../core/inversify.config';
 import { TYPES } from '../core/types';
 import { plugin } from '../decorators';
-import { PluginClass } from '../typings/daruk';
 
 @plugin()
-class DarukHttpShutdown implements PluginClass {
+class DarukHttpShutdown implements DarukType.PluginClass {
   public async initPlugin(daruk: Daruk) {
     daruk.on('serverReady', () => {
       if (daruk.options.gracefulShutdown.enable) {
@@ -22,7 +20,10 @@ class DarukHttpShutdown implements PluginClass {
           TYPES.PluginInstance,
           'DarukExitHook'
         );
-        DarukExitHook.addHook(function handleHttpGracefulShutdown(err: Error | null, cb: Function) {
+        DarukExitHook.addHook(function handleHttpGracefulShutdown(
+          err: Error | null,
+          cb: (...args: any[]) => void
+        ) {
           daruk.logger.info(`handle unfinished connections, waiting up to ${timeout}ms`);
           const startTime = Date.now();
           serverShutDown

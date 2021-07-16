@@ -9,7 +9,6 @@ import is = require('is');
 import Koa = require('koa');
 import { SwaggerRouter } from 'koa-swagger-decorator';
 import urljoin = require('url-join');
-import Daruk from '../core/daruk';
 import { darukContainer } from '../core/inversify.config';
 import { TYPES } from '../core/types';
 import { plugin } from '../decorators';
@@ -26,9 +25,8 @@ import {
   MIDDLEWARE_NAME,
   SERVICE
 } from '../decorators/constants';
-import { Constructor, DarukContext, MiddlewareClass, PluginClass } from '../typings/daruk';
 
-interface DarukRouter extends Daruk {
+interface DarukRouter extends DarukType.Daruk {
   router: Router;
 }
 
@@ -38,8 +36,8 @@ interface Meta {
 }
 
 @plugin()
-class RouterController implements PluginClass {
-  public async initPlugin(daruk: Daruk) {
+class RouterController implements DarukType.PluginClass {
+  public async initPlugin(daruk: DarukType.Daruk) {
     daruk.on('init', () => {
       daruk.emit('routerUseBefore');
       if (daruk.options.routerType === 'swagger') {
@@ -52,12 +50,12 @@ class RouterController implements PluginClass {
       const controllers = Reflect.getMetadata(CONTROLLER_CLASS, Reflect) || [];
       const Services = Reflect.getMetadata(SERVICE, Reflect) || [];
       controllers
-        .sort((a: Constructor, b: Constructor) => {
+        .sort((a: DarukType.Constructor, b: DarukType.Constructor) => {
           let Apriority = Reflect.getMetadata(CONTROLLER_PRIORITY, a) || 0;
           let Bpriority = Reflect.getMetadata(CONTROLLER_PRIORITY, b) || 0;
           return Apriority - Bpriority;
         })
-        .forEach((controller: Constructor) => {
+        .forEach((controller: DarukType.Constructor) => {
           if (daruk.options.routerType === 'swagger') {
             console.log(controller);
             daruk.router.map(controller, { doValidation: true });
@@ -103,7 +101,7 @@ class RouterController implements PluginClass {
                   if (middlewares) {
                     // 可以对单个路由应用多个中间件
                     middlewares.forEach(({ middlewareName, options }) => {
-                      let mid = darukContainer.getNamed<MiddlewareClass>(
+                      let mid = darukContainer.getNamed<DarukType.MiddlewareClass>(
                         TYPES.Middleware,
                         middlewareName
                       );
@@ -126,8 +124,11 @@ class RouterController implements PluginClass {
                   // @ts-ignore
                   daruk.router[method](
                     routePath,
-                    async function routeHandle(ctx: DarukContext, next: () => Promise<void>) {
-                      Services.forEach((target: Constructor) => {
+                    async function routeHandle(
+                      ctx: DarukType.DarukContext,
+                      next: () => Promise<void>
+                    ) {
+                      Services.forEach((target: DarukType.Constructor) => {
                         // @ts-ignore
                         ctx.requestContainer.bind<Constructor>(target.name).to(target);
                       });

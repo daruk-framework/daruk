@@ -6,10 +6,9 @@
 import koaBody = require('koa-body');
 import Daruk from '../../core/daruk';
 import { defineMiddleware } from '../../decorators';
-import { MiddlewareClass } from '../../typings/daruk';
 
 @defineMiddleware('daruk_body')
-class KoaBody implements MiddlewareClass {
+class KoaBody implements DarukType.MiddlewareClass {
   public initMiddleware(daruk: Daruk) {
     return koaBody(daruk.options.bodyOptions);
   }

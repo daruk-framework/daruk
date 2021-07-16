@@ -6,7 +6,6 @@
 /** @internal */
 import KoaLogger = require('daruk-logger');
 import { EventEmitter } from 'events';
-import { injectable } from 'inversify';
 import { buildProviderModule } from 'inversify-binding-decorators';
 /** @internal */
 import Koa = require('koa');
@@ -17,8 +16,6 @@ import { dirname, join } from 'path';
 /** @internal */
 import recursive = require('recursive-readdir');
 import mockHttp from '../mock/http_server';
-import { PluginClass, Server } from '../typings/daruk';
-import { Options, PartialOptions } from '../typings/daruk_options';
 import { debugLog, isJsTsFile, JsTsReg } from '../utils';
 import getDefaultOptions from './daruk_default_options';
 import { darukContainer } from './inversify.config';
@@ -28,7 +25,7 @@ class Daruk extends EventEmitter {
   [key: string]: any;
   public name!: string;
   public app: Koa;
-  public httpServer!: Server;
+  public httpServer!: DarukType.Server;
   public logger!: KoaLogger.logger;
   public options!: Options;
   public constructor() {
@@ -61,7 +58,7 @@ class Daruk extends EventEmitter {
   public async binding() {
     await this._loadFile(join(__dirname, '../plugins'));
     await this._loadFile(join(__dirname, '../built_in'));
-    const plugins = darukContainer.getAll<PluginClass>(TYPES.PLUGINCLASS);
+    const plugins = darukContainer.getAll<DarukType.PluginClass>(TYPES.PLUGINCLASS);
     for (let plugin of plugins) {
       let retValue = await plugin.initPlugin(this);
       if (!darukContainer.isBoundNamed(TYPES.PluginInstance, plugin.constructor.name)) {
@@ -93,16 +90,16 @@ class Daruk extends EventEmitter {
     hostname?: string,
     backlog?: number,
     listeningListener?: () => void
-  ): Server;
-  public listen(port: number, hostname?: string, listeningListener?: () => void): Server;
-  public listen(port: number, backlog?: number, listeningListener?: () => void): Server;
-  public listen(port: number, listeningListener?: () => void): Server;
-  public listen(path: string, backlog?: number, listeningListener?: () => void): Server;
-  public listen(path: string, listeningListener?: () => void): Server;
-  public listen(handle: any, backlog?: number, listeningListener?: () => void): Server;
-  public listen(handle: any, listeningListener?: () => void): Server;
-  public listen(options: ListenOptions, listeningListener?: () => void): Server;
-  public listen(...args: any[]): Server {
+  ): DarukType.Server;
+  public listen(port: number, hostname?: string, listeningListener?: () => void): DarukType.Server;
+  public listen(port: number, backlog?: number, listeningListener?: () => void): DarukType.Server;
+  public listen(port: number, listeningListener?: () => void): DarukType.Server;
+  public listen(path: string, backlog?: number, listeningListener?: () => void): DarukType.Server;
+  public listen(path: string, listeningListener?: () => void): DarukType.Server;
+  public listen(handle: any, backlog?: number, listeningListener?: () => void): DarukType.Server;
+  public listen(handle: any, listeningListener?: () => void): DarukType.Server;
+  public listen(options: ListenOptions, listeningListener?: () => void): DarukType.Server;
+  public listen(...args: any[]): DarukType.Server {
     // @ts-ignore
     this.httpServer = this.app.listen.apply(this.app, args);
     this.emit('serverReady', this.httpServer);

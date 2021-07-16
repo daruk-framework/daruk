@@ -1,13 +1,10 @@
-import { injectable } from 'inversify';
-import Daruk from '../core/daruk';
 import { darukContainer } from '../core/inversify.config';
 import { TYPES } from '../core/types';
 import { plugin } from '../decorators';
-import { MiddlewareClass, PluginClass } from '../typings/daruk';
 
 @plugin()
-class GlobalMiddleware implements PluginClass {
-  public async initPlugin(daruk: Daruk) {
+class GlobalMiddleware implements DarukType.PluginClass {
+  public async initPlugin(daruk: DarukType.Daruk) {
     daruk.on('routerUseBefore', () => {
       if (darukContainer.isBound(TYPES.Middleware)) {
         let buildInMiddlewareOrder = [
@@ -22,7 +19,7 @@ class GlobalMiddleware implements PluginClass {
         ];
         let middlewareOrder = buildInMiddlewareOrder.concat(daruk.options.middlewareOrder);
         middlewareOrder.forEach((midname) => {
-          let mid = darukContainer.getNamed<MiddlewareClass>(TYPES.Middleware, midname);
+          let mid = darukContainer.getNamed<DarukType.MiddlewareClass>(TYPES.Middleware, midname);
           let usehandle = mid.initMiddleware(daruk);
           // @ts-ignore
           if (usehandle) daruk.app.use(usehandle, midname);

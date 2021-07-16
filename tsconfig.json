@@ -75,8 +75,10 @@
 
     /* Experimental Options */
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
-    "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */
+    "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
+    "typeRoots": ["./src/typings"],
+    "lib": ["ESNext"]
   },
   "exclude": ["node_modules", "dist", "./example/**/node_modules"],
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts", "src/typings/daruk.d.ts.1"]
 }

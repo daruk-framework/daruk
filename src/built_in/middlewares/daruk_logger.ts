@@ -5,7 +5,6 @@
 import { middleware as loggerMiddleware } from 'daruk-logger';
 import Daruk from '../../core/daruk';
 import { defineMiddleware } from '../../decorators';
-import { MiddlewareClass } from '../../typings/daruk';
 
 interface LoggerOptions {
   filter?: (ctx: Daruk['app']['context']) => boolean;
@@ -14,7 +13,7 @@ interface LoggerOptions {
 }
 
 @defineMiddleware('daruk_logger')
-class DarukLogger implements MiddlewareClass {
+class DarukLogger implements DarukType.MiddlewareClass {
   public initMiddleware(daruk: Daruk) {
     const { filter, requiredLogs } = daruk.options.loggerMiddleware;
     const options: LoggerOptions = {

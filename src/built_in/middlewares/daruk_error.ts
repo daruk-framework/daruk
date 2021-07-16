@@ -5,11 +5,10 @@
 import error from 'koa-onerror';
 import Daruk from '../../core/daruk';
 import { defineMiddleware } from '../../decorators';
-import { MiddlewareClass } from '../../typings/daruk';
 
 @defineMiddleware('daruk_error')
-class KoaBody implements MiddlewareClass {
-  public initMiddleware(daruk: Daruk) {
+class KoaBody implements DarukType.MiddlewareClass {
+  public initMiddleware(daruk: DarukType.Daruk) {
     error(daruk.app, daruk.options.errorOptions);
   }
 }

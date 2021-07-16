@@ -1,7 +1,4 @@
-import koaBody = require('koa-body');
-import { DarukContext } from '../';
-
-type RecursivePartial<T> = {
+declare type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? RecursivePartial<U>[]
     : T[P] extends object
@@ -9,21 +6,21 @@ type RecursivePartial<T> = {
     : T[P];
 };
 
-interface ErrorOptions {
-  all?: (err: Error, ctx: DarukContext) => void;
-  html?: (err: Error, ctx: DarukContext) => void;
-  text?: (err: Error, ctx: DarukContext) => void;
-  json?: (err: Error, ctx: DarukContext) => void;
-  jsonp?: (err: Error, ctx: DarukContext) => void;
-  redirect?: (err: Error, ctx: DarukContext) => void;
+declare interface ErrorOptions {
+  all?: (err: Error, ctx: DarukType.DarukContext) => void;
+  html?: (err: Error, ctx: DarukType.DarukContext) => void;
+  text?: (err: Error, ctx: DarukType.DarukContext) => void;
+  json?: (err: Error, ctx: DarukType.DarukContext) => void;
+  jsonp?: (err: Error, ctx: DarukType.DarukContext) => void;
+  redirect?: (err: Error, ctx: DarukType.DarukContext) => void;
 }
 
-export interface Options {
+declare interface Options {
   middlewareOrder: string[];
   name: string;
   rootPath: string;
   debug: boolean;
-  bodyOptions: koaBody.IKoaBodyOptions;
+  bodyOptions: import('koa-body').IKoaBodyOptions;
   // monitor: {
   //   enable: boolean;
   //   v8AnalyticsPath: string;
@@ -36,7 +33,7 @@ export interface Options {
   loggerOptions: any;
   customLogger: any;
   loggerMiddleware: {
-    filter?: (ctx: DarukContext) => boolean;
+    filter?: (ctx: DarukType.DarukContext) => boolean;
     requiredLogs?: string[];
   };
   gracefulShutdown: {
@@ -53,7 +50,7 @@ export interface Options {
   };
   [key: string]: any;
   errorOptions?: ErrorOptions | undefined;
-  notFound?: (ctx: DarukContext) => void;
+  notFound?: (ctx: DarukType.DarukContext) => void;
 }
 
-export type PartialOptions = RecursivePartial<Options>;
+declare type PartialOptions = RecursivePartial<Options>;

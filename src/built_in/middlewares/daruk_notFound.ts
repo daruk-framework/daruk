@@ -4,12 +4,11 @@
 
 import Daruk from '../../core/daruk';
 import { defineMiddleware } from '../../decorators';
-import { DarukContext, MiddlewareClass, Next } from '../../typings/daruk';
 
 @defineMiddleware('daruk_notFound')
-class KoaBody implements MiddlewareClass {
+class KoaBody implements DarukType.MiddlewareClass {
   public initMiddleware(daruk: Daruk) {
-    return async (ctx: DarukContext, next: Next) => {
+    return async (ctx: DarukType.DarukContext, next: DarukType.Next) => {
       try {
         await next();
         // tslint:disable-next-line:no-magic-numbers

@@ -1,9 +1,9 @@
-import { controller, DarukContext, DarukServer, get, Next } from '../../src';
+import { controller, DarukServer, get } from '../../src';
 
 @controller()
 class HelloWorld {
   @get('/')
-  public async index(ctx: DarukContext, next: Next) {
+  public async index(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = 'hello world';
   }
 }

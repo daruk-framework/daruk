@@ -3,14 +3,17 @@ import assert = require('assert');
 import htmlspecialchars = require('htmlspecialchars');
 import is = require('is');
 import koa = require('koa');
-import { method, ParseType, validateFunc } from '../typings/daruk';
 
 export function required(config: { body?: string[]; query?: string[]; params?: string[] }) {
   assert(
     is.object(config) && Object.keys(config).length > 0,
     `[Decorator required] parameter must be a object and more than one property`
   );
-  function check(actual: { [key: string]: string }, expected: string[] | undefined, part: method) {
+  function check(
+    actual: { [key: string]: string },
+    expected: string[] | undefined,
+    part: DarukType.method
+  ) {
     if (is.object(actual) && expected) {
       for (let key of expected) {
         if (is.undefined(actual[key])) {
@@ -40,8 +43,12 @@ export function required(config: { body?: string[]; query?: string[]; params?: s
   };
 }
 
-export function typeParse(config: { body?: ParseType; query?: ParseType; params?: ParseType }) {
-  function parse(constructors: ParseType | undefined, actual: { [key: string]: string }) {
+export function typeParse(config: {
+  body?: DarukType.ParseType;
+  query?: DarukType.ParseType;
+  params?: DarukType.ParseType;
+}) {
+  function parse(constructors: DarukType.ParseType | undefined, actual: { [key: string]: string }) {
     const parsed: { [key: string]: any } = {};
     if (constructors) {
       Object.keys(constructors).forEach((key) => {

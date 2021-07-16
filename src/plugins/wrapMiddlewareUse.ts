@@ -4,18 +4,15 @@
  */
 
 import convertHrtime = require('convert-hrtime');
-import { injectable } from 'inversify';
-import Daruk from '../core/daruk';
 import { plugin } from '../decorators';
-import { DarukContext, Next, PluginClass } from '../typings/daruk';
 
 @plugin()
-class WrapMiddlewareUse implements PluginClass {
-  public async initPlugin(daruk: Daruk) {
+class WrapMiddlewareUse implements DarukType.PluginClass {
+  public async initPlugin(daruk: DarukType.Daruk) {
     const midNames: string[] = [];
     const WRAP_MIDDLEWARE_USE = 'WRAP_MIDDLEWARE_USE';
     function wrapUse(fn: Function, name: string) {
-      let f = async (ctx: DarukContext, next: Next) => {
+      let f = async (ctx: DarukType.DarukContext, next: DarukType.Next) => {
         enterMid(ctx);
         await fn(ctx, next);
         outMid(ctx);
@@ -24,12 +21,12 @@ class WrapMiddlewareUse implements PluginClass {
       return f;
     }
 
-    function enterMid(ctx: DarukContext) {
+    function enterMid(ctx: DarukType.DarukContext) {
       let time = getTimeInfo(ctx);
       time.list.push(getHrTime());
     }
 
-    function outMid(ctx: DarukContext) {
+    function outMid(ctx: DarukType.DarukContext) {
       let ns2ms = 1000000;
       let time = getTimeInfo(ctx);
       // 最后进入的中间件，最先出来
@@ -57,7 +54,7 @@ class WrapMiddlewareUse implements PluginClass {
       }
     }
 
-    function getTimeInfo(ctx: DarukContext) {
+    function getTimeInfo(ctx: DarukType.DarukContext) {
       // 将时间信息保存到 ctx
       let timeInfo = ctx[WRAP_MIDDLEWARE_USE];
       if (!timeInfo) {
@@ -75,7 +72,7 @@ class WrapMiddlewareUse implements PluginClass {
       return convertHrtime(process.hrtime()).nanoseconds;
     }
 
-    function wrapMiddleware(app: Daruk['app']) {
+    function wrapMiddleware(app: DarukType.Daruk['app']) {
       const use = app.use;
       // @ts-ignore
       app.use = function wrappedKoaUse(fn: Function, name: string) {

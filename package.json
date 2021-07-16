@@ -17,7 +17,7 @@
     "prepublish": "npm run build",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
-  "types": "./types/index.d.ts",
+  "types": "./src/types/index.d.ts",
   "files": [
     "types",
     "build",

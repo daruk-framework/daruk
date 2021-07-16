@@ -3,7 +3,6 @@ import { injectable } from 'inversify';
 import is = require('is');
 import { darukContainer } from '../core/inversify.config';
 import { TYPES } from '../core/types';
-import { Constructor } from '../typings/daruk';
 import { MIDDLEWARE_NAME } from './constants';
 
 /**
@@ -25,8 +24,11 @@ export function middleware(middlewareName: string, options?: { [key: string]: an
 }
 
 export function defineMiddleware(middlewareName: string) {
-  return (target: Constructor) => {
+  return (target: DarukType.Constructor) => {
     injectable()(target);
-    darukContainer.bind<Constructor>(TYPES.Middleware).to(target).whenTargetNamed(middlewareName);
+    darukContainer
+      .bind<DarukType.Constructor>(TYPES.Middleware)
+      .to(target)
+      .whenTargetNamed(middlewareName);
   };
 }

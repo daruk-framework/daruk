@@ -3,7 +3,6 @@
  */
 
 import { injectable } from 'inversify';
-import { Constructor } from '../typings/daruk';
 import { CONTROLLER_CLASS, CONTROLLER_MIDDLEWARES, CONTROLLER_PRIORITY } from './constants';
 
 /**
@@ -15,7 +14,7 @@ import { CONTROLLER_CLASS, CONTROLLER_MIDDLEWARES, CONTROLLER_PRIORITY } from '.
 export function controller(
   middlewares?: [{ middlewareName: string; options?: { [key: string]: any } }]
 ) {
-  return (target: Constructor) => {
+  return (target: DarukType.Constructor) => {
     injectable()(target);
     Reflect.defineMetadata(CONTROLLER_MIDDLEWARES, middlewares, target);
     let Controllers = Reflect.getMetadata(CONTROLLER_CLASS, Reflect) || [];
@@ -25,7 +24,7 @@ export function controller(
 }
 
 export function priority(priority: number) {
-  return (target: Constructor) => {
+  return (target: DarukType.Constructor) => {
     Reflect.defineMetadata(CONTROLLER_PRIORITY, priority, target);
   };
 }

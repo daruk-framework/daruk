@@ -4,25 +4,24 @@
 import { injectable } from 'inversify';
 import { darukContainer } from '../core/inversify.config';
 import { TYPES } from '../core/types';
-import { Constructor, PluginClass, TimerClass } from '../typings/daruk';
 import { SERVICE } from './constants';
 
 export function plugin() {
-  return (target: Constructor) => {
+  return (target: DarukType.Constructor) => {
     injectable()(target);
-    darukContainer.bind<PluginClass>(TYPES.PLUGINCLASS).to(target);
+    darukContainer.bind<DarukType.PluginClass>(TYPES.PLUGINCLASS).to(target);
   };
 }
 
 export function timer() {
-  return (target: Constructor) => {
+  return (target: DarukType.Constructor) => {
     injectable()(target);
-    darukContainer.bind<TimerClass>(TYPES.Timer).to(target);
+    darukContainer.bind<DarukType.TimerClass>(TYPES.Timer).to(target);
   };
 }
 
 export function service() {
-  return (target: Constructor) => {
+  return (target: DarukType.Constructor) => {
     injectable()(target);
     let Services = Reflect.getMetadata(SERVICE, Reflect) || [];
     let newMetadata = [target].concat(Services);
