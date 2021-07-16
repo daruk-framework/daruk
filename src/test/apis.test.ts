@@ -1,6 +1,6 @@
 import chai = require('chai');
 import sinon = require('sinon');
-import { DarukServer } from '../src';
+import { DarukServer } from '..';
 
 const assert = chai.assert;
 

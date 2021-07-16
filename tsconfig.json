@@ -16,7 +16,9 @@
       "**/core/inversify.confg.ts",
       "**/core/types.ts",
       "**/core/daruk_default_options.ts",
-      "**/mock/*.ts"
+      "**/mock/*.ts",
+      "**/test/*.ts",
+      "**/example/*.ts"
     ]
   },
   "compilerOptions": {
@@ -76,7 +78,7 @@
     /* Experimental Options */
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
-    "typeRoots": ["./src/typings", "./types"],
+    "typeRoots": ["./src/typings", "./types", "node_modules/@types"],
     "lib": ["ESNext"]
   },
   "exclude": ["node_modules", "dist", "./src/example/**/node_modules"],

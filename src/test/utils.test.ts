@@ -1,6 +1,6 @@
 import chai = require('chai');
 import sinon = require('sinon');
-import { debugLog, isJsTsFile } from '../src/utils';
+import { debugLog, isJsTsFile } from '../utils';
 
 const assert = chai.assert;
 

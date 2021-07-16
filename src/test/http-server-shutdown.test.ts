@@ -1,24 +1,15 @@
 import chai = require('chai');
 import sinon = require('sinon');
 import request = require('supertest');
-import {
-  controller,
-  Daruk,
-  darukContainer,
-  DarukContext,
-  DarukServer,
-  get,
-  Next,
-  TYPES
-} from '../src';
+import { controller, darukContainer, DarukServer, get, TYPES } from '..';
 
 const assert = chai.assert;
 const port = 3000;
 const code200 = 200;
 
 describe('http-server-shutdown', () => {
-  let app: Daruk['httpServer'];
-  let server: Daruk;
+  let app: DarukType.Daruk['httpServer'];
+  let server: DarukType.Daruk;
   let stub: sinon.SinonStub;
   before(async () => {
     server = DarukServer({
@@ -35,9 +26,9 @@ describe('http-server-shutdown', () => {
     @controller()
     class Index {
       @get('/')
-      public async index(ctx: DarukContext, next: Next) {
+      public async index(ctx: DarukType.DarukContext, next: DarukType.Next) {
         // 定义一个 2s 返回的路由
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
           const routeTimeout = 2000;
           setTimeout(() => {
             ctx.body = 'delay route';

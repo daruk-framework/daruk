@@ -4,14 +4,14 @@
 
 import chai = require('chai');
 import sinon = require('sinon');
-import { Daruk, DarukContext, DarukServer, Next } from '../src';
+import { DarukServer } from '..';
 
 const port = 3000;
 const assert = chai.assert;
 
 describe('cover-branches', () => {
   let stubExit: sinon.SinonStub;
-  let server: Daruk;
+  let server: DarukType.Daruk;
 
   beforeEach(async () => {
     server = DarukServer({
@@ -22,7 +22,7 @@ describe('cover-branches', () => {
         overwriteConsole: false
       },
       loggerMiddleware: {
-        filter(ctx: DarukContext) {
+        filter(ctx: DarukType.DarukContext) {
           return true;
         },
         requiredLogs: [
@@ -41,7 +41,7 @@ describe('cover-branches', () => {
     // @ts-ignore
     stubExit = sinon.stub(process, 'exit');
     await server.binding();
-    server.app.use((ctx: DarukContext, next: Next) => {
+    server.app.use((ctx: DarukType.DarukContext, next: DarukType.Next) => {
       return next();
     });
     // 传递 host 的情况

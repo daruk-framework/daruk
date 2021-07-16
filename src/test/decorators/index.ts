@@ -3,8 +3,6 @@ import {
   cache,
   controller,
   CronJob,
-  Daruk,
-  DarukContext,
   defineMiddleware,
   del,
   disabled,
@@ -14,7 +12,6 @@ import {
   inject,
   injectable,
   middleware,
-  Next,
   options,
   patch,
   post,
@@ -26,7 +23,7 @@ import {
   timer,
   type,
   validate
-} from '../../src';
+} from '../..';
 
 class Store {
   public store: { [key: string]: any };
@@ -54,7 +51,7 @@ const cacheStore = new Store();
 class MultiRouteMiddlewareRouteMiddleware {
   public initMiddleware() {
     return (options: { [key: string]: any }) => {
-      return (ctx: DarukContext, next: Next) => {
+      return (ctx: DarukType.DarukContext, next: DarukType.Next) => {
         ctx.body = ctx.body + ' multiRouteMiddleware';
         return next();
       };
@@ -65,7 +62,7 @@ class MultiRouteMiddlewareRouteMiddleware {
 @defineMiddleware('routeMiddleware')
 class RouteMiddleware {
   public initMiddleware() {
-    return (ctx: DarukContext, next: Next) => {
+    return (ctx: DarukType.DarukContext, next: DarukType.Next) => {
       ctx.body = 'routeMiddleware';
       return next();
     };
@@ -74,7 +71,7 @@ class RouteMiddleware {
 
 @service()
 class MyServiceA {
-  @inject('ctx') public ctx?: DarukContext;
+  @inject('ctx') public ctx?: DarukType.DarukContext;
   public getRet() {
     // @ts-ignore
     return this.ctx.query.id;
@@ -83,12 +80,13 @@ class MyServiceA {
 
 @service()
 class MyServiceB {
-  @inject('ctx') public ctx?: DarukContext;
+  @inject('ctx') public ctx?: DarukType.DarukContext;
   public getRet() {
     return new Promise((r) => {
       setTimeout(() => {
         // @ts-ignore
         r(this.ctx.query.id);
+        // tslint:disable-next-line:no-magic-numbers
       }, 2000);
     });
   }
@@ -96,7 +94,7 @@ class MyServiceB {
 
 @service()
 class MyServiceC {
-  @inject('ctx') public ctx?: DarukContext;
+  @inject('ctx') public ctx?: DarukType.DarukContext;
   public getRet() {
     // @ts-ignore
     return this.ctx.query.id;
@@ -109,17 +107,17 @@ class ServiceTest {
   @inject('MyServiceB') public MyServiceB?: MyServiceB;
   @inject('MyServiceC') public MyServiceC?: MyServiceC;
   @get('/methodA')
-  public async methodA(ctx: DarukContext, next: Next) {
+  public async methodA(ctx: DarukType.DarukContext, next: DarukType.Next) {
     // @ts-ignore
     ctx.body = this.MyServiceA.getRet();
   }
   @get('/methodB')
-  public async methodB(ctx: DarukContext, next: Next) {
+  public async methodB(ctx: DarukType.DarukContext, next: DarukType.Next) {
     // @ts-ignore
     ctx.body = await this.MyServiceB.getRet();
   }
   @get('/methodC')
-  public async methodC(ctx: DarukContext, next: Next) {
+  public async methodC(ctx: DarukType.DarukContext, next: DarukType.Next) {
     // @ts-ignore
     ctx.body = this.MyServiceC.getRet();
   }
@@ -132,57 +130,57 @@ class ServiceTest {
 ])
 class ControllerMiddleware {
   @get('/ControllerMiddleware')
-  public async ControllerMiddleware(ctx: DarukContext, next: Next) {}
+  public async ControllerMiddleware(ctx: DarukType.DarukContext, next: DarukType.Next) {}
 }
 
 @controller()
 class Index {
   @get('/repeatMethod')
   @post('/repeatMethod')
-  public async repeatMethod(ctx: DarukContext, next: Next) {
+  public async repeatMethod(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @all('/all')
-  public async all(ctx: DarukContext, next: Next) {
+  public async all(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @del('/del')
-  public async del(ctx: DarukContext, next: Next) {
+  public async del(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @get('/get')
-  public async get(ctx: DarukContext, next: Next) {
+  public async get(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @head('/head')
-  public async head(ctx: DarukContext, next: Next) {
+  public async head(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @options('/options')
-  public async options(ctx: DarukContext, next: Next) {
+  public async options(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @patch('/patch')
-  public async patch(ctx: DarukContext, next: Next) {
+  public async patch(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @post('/post')
-  public async post(ctx: DarukContext, next: Next) {
+  public async post(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
   @put('/put')
-  public async put(ctx: DarukContext, next: Next) {
+  public async put(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
 
   @redirect('/json2')
   @get('/redirect')
-  public redirect(ctx: DarukContext) {
+  public redirect(ctx: DarukType.DarukContext) {
     ctx.body = '';
   }
   @type('application/json')
   @get('/type')
-  public type(ctx: DarukContext) {
+  public type(ctx: DarukType.DarukContext) {
     ctx.body = {
       foo: 1
     };
@@ -190,18 +188,18 @@ class Index {
 
   @header('foo', 'bar')
   @get('/header')
-  public header(ctx: DarukContext) {
+  public header(ctx: DarukType.DarukContext) {
     ctx.body = 'bar';
   }
 
   @header({ foo: 'bar' })
   @get('/headers')
-  public headers(ctx: DarukContext) {
+  public headers(ctx: DarukType.DarukContext) {
     ctx.body = 'bar';
   }
 
   @get('/wildcard_(\\d)_(\\d).htm')
-  public deatil(ctx: DarukContext) {
+  public deatil(ctx: DarukType.DarukContext) {
     ctx.body = {
       foo: 1
     };
@@ -209,18 +207,18 @@ class Index {
 
   @middleware('routeMiddleware')
   @get('/middleware')
-  public async middleware(ctx: DarukContext, next: Next) {}
+  public async middleware(ctx: DarukType.DarukContext, next: DarukType.Next) {}
 
   @middleware('multiRouteMiddleware', { foo: 1 })
   @middleware('routeMiddleware')
   @get('/multiMiddleware')
-  public async multiMiddleware(ctx: DarukContext, next: Next) {}
+  public async multiMiddleware(ctx: DarukType.DarukContext, next: DarukType.Next) {}
 
   @validate({
     foo: 'string'
   })
   @get('/validate')
-  public validate(ctx: DarukContext) {
+  public validate(ctx: DarukType.DarukContext) {
     ctx.body = ctx.request.query;
   }
 
@@ -231,7 +229,7 @@ class Index {
     }
   })
   @post('/validate')
-  public validatePost(ctx: DarukContext) {
+  public validatePost(ctx: DarukType.DarukContext) {
     ctx.body = ctx.request.body;
   }
 
@@ -244,13 +242,13 @@ class Index {
     }
   })
   @get('/cache')
-  public cache(ctx: DarukContext) {
+  public cache(ctx: DarukType.DarukContext) {
     ctx.body = 'cacheData';
   }
 
   @disabled()
   @get('/disabled')
-  public disabled(ctx: DarukContext) {
+  public disabled(ctx: DarukType.DarukContext) {
     ctx.body = '';
   }
   public _destroy() {
@@ -266,7 +264,7 @@ class EmptyClass {}
 @priority(-1)
 class PrefixIndexA {
   @get('/index')
-  public async test(ctx: DarukContext, next: Next) {
+  public async test(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = 'A';
     await next();
   }
@@ -276,7 +274,7 @@ class PrefixIndexA {
 @controller()
 class PrefixIndexB {
   @get('/index')
-  public async test(ctx: DarukContext, next: Next) {
+  public async test(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = ctx.body + 'B';
   }
 }
@@ -285,7 +283,7 @@ class PrefixIndexB {
 @controller()
 class PrefixTestDeep {
   @get('/json')
-  public async json(ctx: DarukContext, next: Next) {
+  public async json(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = { foo: 1 };
   }
 }
@@ -295,7 +293,7 @@ class PrefixTestDeep {
 @controller()
 class DisabledIndex {
   @get('/test')
-  public async test(ctx: DarukContext, next: Next) {
+  public async test(ctx: DarukType.DarukContext, next: DarukType.Next) {
     ctx.body = '';
   }
 }
@@ -303,13 +301,13 @@ class DisabledIndex {
 @timer()
 class Timers {
   public cronTime!: string;
-  public initTimer(daruk: Daruk) {
+  public initTimer(daruk: DarukType.Daruk) {
     this.cronTime = '* * * * * *';
   }
   public onTick(cron: CronJob) {
     cron.stop();
   }
-  public onComplete(cron: CronJob, daruk: Daruk) {
+  public onComplete(cron: CronJob, daruk: DarukType.Daruk) {
     daruk.timerComplete = true;
   }
 }
